@@ -1,109 +1,72 @@
+
 #include<stdio.h>
-int n;
-struct process
+ 
+int main()
 {
-
-int p_no;
-
-int arrival_t,burst_t,ct,wait_t,taround_time,p;
-
-int flag;
- }p_list[100];
- void Sorting()
- {
-struct process p;
-
-int i, j;
-
-for(i=0;i<n-1;i++)
-
-{
-
-for(j=i+1;j<n;j++)
-
-{
-
-if(p_list[i].arrival_t > p_list[j].arrival_t)
-
-{
-
-p = p_list[i];
-
-p_list[i] = p_list[j];
-
-p_list[j] = p;
-
-}
-
-}
-
-}
- }
- int main()
- {
-
-int i,t=0,b_t=0,peak;
-
-int a[10];
-
-float wait_time = 0, taround_time = 0, avg_w_t=0, avg_taround_time=0;
-
-printf("enter the no. of processes: ");
-
-scanf("%d",&n);
-
-for(i = 0; i < n; i++)
-
-{
-
-p_list[i].p_no = i+1;
-
-printf("\nEnter Details For P%d process:-\n", p_list[i].p_no);
-printf("Enter Arrival Time: ");
-scanf("%d", &p_list[i].arrival_t );
-printf("Enter Burst Time: ");
-scanf("%d", &p_list[i].burst_t);
-p_list[i].flag = 0;
-b_t = b_t + p_list[i].burst_t;
-}
-Sorting();
-for( i=0;i<n;i++)
-{
-a[i]=p_list[i].burst_t;
-}
-p_list[9].burst_t = 9999;
-for(t = p_list[0].arrival_t; t <= b_t+1;)
-{
-peak = 9;
-for(i=0;i<n;i++)
-{
-if(p_list[i].arrival_t <= t && p_list[i].burst_t < p_list[peak].burst_t && p_list[i].flag != 1)
-{
-peak = i;
-}
-if(p_list[peak].burst_t==0 && p_list[i].flag != 1)
-{
-p_list[i].flag = 1;
-p_list[peak].ct=t;p_list[peak].burst_t=9999;
-printf("P%d completes in %d\n",p_list[i].p_no,p_list[peak].ct);
-}
-}
-t++;
-(p_list[peak].burst_t)--;
-}
-for(i=0;i<n;i++)
-{
-p_list[i].taround_time=(p_list[i].ct)-(p_list[i].arrival_t);
-avg_taround_time=avg_taround_time+p_list[i].taround_time;
-p_list[i].wait_t=((p_list[i].taround_time)-a[i]);
-avg_w_t=avg_w_t+p_list[i].wait_t;
-}
-printf("PNO\tAT\tCT\tTA\tWTt\n");
-for(i=0;i<n;i++)
-{
-printf("P%d\t%d\t%d\t%d\t%d\n",p_list[i].p_no,p_list[i].arrival_t,p_list[i].ct,p_list[i].taround_time
-,p_list[i].wait_t);
- }
-printf("Average Turn around Time: %f\t\n\n",avg_taround_time);
-printf("Average Waiting Time :\t %f\t\n",avg_w_t);
+    int bt[20],p[20],wt[20],tat[20],pr[20],i,j,n,total=0,pos,temp,avg_wt,avg_tat;
+    printf("Enter Total Number of Process:");
+    scanf("%d",&n);
+ 
+    printf("\nEnter Burst Time and Priority\n");
+    for(i=0;i<n;i++)
+    {
+        printf("\nP[%d]\n",i+1);
+        printf("Burst Time:");
+        scanf("%d",&bt[i]);
+        printf("Priority:");
+        scanf("%d",&pr[i]);
+        p[i]=i+1;           //contains process number
+    }
+ 
+    //sorting burst time, priority and process number in ascending order using selection sort
+    for(i=0;i<n;i++)
+    {
+        pos=i;
+        for(j=i+1;j<n;j++)
+        {
+            if(pr[j]<pr[pos])
+                pos=j;
+        }
+ 
+        temp=pr[i];
+        pr[i]=pr[pos];
+        pr[pos]=temp;
+ 
+        temp=bt[i];
+        bt[i]=bt[pos];
+        bt[pos]=temp;
+ 
+        temp=p[i];
+        p[i]=p[pos];
+        p[pos]=temp;
+    }
+ 
+    wt[0]=0;	//waiting time for first process is zero
+ 
+    //calculate waiting time
+    for(i=1;i<n;i++)
+    {
+        wt[i]=0;
+        for(j=0;j<i;j++)
+            wt[i]+=bt[j];
+ 
+        total+=wt[i];
+    }
+ 
+    avg_wt=total/n;      //average waiting time
+    total=0;
+ 
+    printf("\nProcess\t    Burst Time    \tWaiting Time\tTurnaround Time");
+    for(i=0;i<n;i++)
+    {
+        tat[i]=bt[i]+wt[i];     //calculate turnaround time
+        total+=tat[i];
+        printf("\nP[%d]\t\t  %d\t\t    %d\t\t\t%d",p[i],bt[i],wt[i],tat[i]);
+    }
+ 
+    avg_tat=total/n;     //average turnaround time
+    printf("\n\nAverage Waiting Time=%d",avg_wt);
+    printf("\nAverage Turnaround Time=%d\n",avg_tat);
+ 
+	return 0;
 }
